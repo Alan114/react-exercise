@@ -6,12 +6,15 @@ import Modal from "./Modal";
 
 function PostsList({ modalIsVisible, hideModalHandler }) {
   const [posts, setPosts] = useState([]);
+  const [isFetching, setIsFetching] = useState(false);
 
   useEffect(() => {
     async function fetchPosts() {
+      setIsFetching(true);
       const response = await fetch("http://localhost:8080/posts");
       const resData = await response.json();
       setPosts(resData.posts);
+      setIsFetching(false);
     }
 
     fetchPosts();
@@ -35,17 +38,22 @@ function PostsList({ modalIsVisible, hideModalHandler }) {
           <NewPost onCancel={hideModalHandler} onAddPost={addPostHandler} />
         </Modal>
       )}
-      {posts.length > 0 && (
+      {!isFetching && posts.length > 0 && (
         <ul className={styles.posts}>
           {posts.map((post) => (
             <Post author={post.author} body={post.body} key={Math.random()} />
           ))}
         </ul>
       )}
-      {posts.length === 0 && (
+      {!isFetching && posts.length === 0 && (
         <div style={{ textAlign: "center", color: "white" }}>
           <h2>There are no posts yet.</h2>
           <p>Start adding them!</p>
+        </div>
+      )}
+      {isFetching && (
+        <div style={{ textAlign: "center", color: "white" }}>
+          <p>Loading posts...</p>
         </div>
       )}
     </>
