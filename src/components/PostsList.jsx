@@ -4,11 +4,17 @@ import styles from "./PostsList.module.css";
 import Modal from "./Modal";
 
 function PostsList({ modalIsVisible, hideModalHandler }) {
+  const [posts, setPosts] = useState([]);
+
+  function addPostHandler(postData) {
+    setPosts((existingPosts) => [postData, ...existingPosts]);
+  }
+
   return (
     <>
       {modalIsVisible && (
         <Modal onClose={hideModalHandler}>
-          <NewPost onCancel={hideModalHandler} />
+          <NewPost onCancel={hideModalHandler} onAddPost={addPostHandler} />
         </Modal>
       )}
 
